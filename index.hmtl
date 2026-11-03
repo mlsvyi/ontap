@@ -3,185 +3,894 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập Vật Lí 12 - Xáo Trộn & Đổi Thông Số</title>
+    <title>Đề Ôn Tập Giữa Học Kỳ I - Vật Lý 12 (Năm học 2026 - 2027)</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
-        h2 { text-align: center; color: #2c3e50; }
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #3498db; color: white; border: none; border-radius: 5px; transition: 0.3s; }
-        button:hover { background-color: #2980b9; }
-        .btn-random { background-color: #e67e22; }
-        .btn-random:hover { background-color: #d35400; }
-        .btn-submit { background-color: #27ae60; }
-        .btn-submit:hover { background-color: #2ecc71; }
-        .question-card { border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; margin-bottom: 20px; background-color: #fcfcfc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .options { list-style-type: none; padding-left: 0; }
-        .options li { margin-bottom: 10px; }
-        .options label { cursor: pointer; }
-        input[type="number"] { padding: 10px; width: 120px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-        .result-msg { margin-top: 12px; font-weight: bold; }
-        .correct { color: #27ae60; }
-        .incorrect { color: #e74c3c; }
-        #score-display { text-align: center; font-size: 1.5em; margin-top: 20px; color: #2c3e50; }
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0f172a;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .exam-info {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .info-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sticky-timer {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: var(--secondary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .timer-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .timer-clock {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fbbf24;
+            font-family: monospace;
+        }
+
+        .section-box {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .section-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-points {
+            font-size: 13px;
+            background: #dbeafe;
+            color: var(--primary-dark);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .question-item {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--secondary);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fafafa;
+        }
+
+        .option-label:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .option-label input {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        /* True/False table layout */
+        .tf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .tf-table th, .tf-table td {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .tf-table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .tf-radio-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* Short answer input */
+        .short-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .short-input {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 200px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .short-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        /* Essay solution toggle */
+        .essay-textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .solution-box {
+            display: none;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #166534;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+
+        .explanation.correct {
+            background-color: #dcfce7;
+            color: #15803d;
+            border-left: 4px solid #22c55e;
+        }
+
+        .explanation.incorrect {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #eff6ff;
+            border: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .btn-close {
+            margin-top: 20px;
+            padding: 10px 24px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .section-box { padding: 15px; }
+            .short-input { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
-    <h2>Hệ Thống Ôn Tập Vật Lí 12[cite: 1]</h2>
-    
-    <div class="controls">
-        <button onclick="shuffleQuestions()">🔀 Xáo Trộn Câu Hỏi</button>
-        <button class="btn-random" onclick="randomizeParameters()">🔄 Thay Đổi Thông Số (Toán)</button>
-        <button class="btn-submit" onclick="checkAnswers()">✅ Chấm Điểm</button>
+<div class="container">
+    <header>
+        <h1>Đề Ôn Tập Giữa Học Kỳ I - Môn Vật Lý 12</h1>
+        <p>Năm học 2026 - 2027 | Đề thi trắc nghiệm & tự luận chuẩn cấu trúc Bộ GD&ĐT</p>
+        <div class="exam-info">
+            <span class="info-badge">Thời gian: 45 phút</span>
+            <span class="info-badge">Tổng điểm: 10.0 điểm</span>
+            <span class="info-badge">Cấu trúc: 4 Phần (12 TN + 2 Đ/S + 4 Trả lời ngắn + 3 Tự luận)</span>
+        </div>
+    </header>
+
+    <div class="sticky-timer">
+        <span class="timer-title">⏱️ Thời gian làm bài còn lại:</span>
+        <span class="timer-clock" id="timer">45:00</span>
     </div>
 
-    <div id="quiz-container"></div>
-    <div id="score-display"></div>
+    <form id="exam-form">
+        <!-- PHẦN I -->
+        <div class="section-box">
+            <div class="section-header">
+                <h3>PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn</h3>
+                <span class="section-points">12 câu (3.0 điểm - 0.25đ/câu)</span>
+            </div>
 
-    <script>
-        // Cơ sở dữ liệu câu hỏi được trích xuất từ đề cương[cite: 1]
-        const questionDatabase = [
-            {
-                id: "q1", 
-                type: "theory",
-                text: "Đặc điểm nào sau đây không phải là đặc điểm của chất ở thể lỏng?[cite: 1]",
-                options: [
-                    "A. Khoảng cách giữa các phân tử lớn hơn ở thể rắn và nhỏ hơn ở thể khí.",
-                    "B. Các phân tử dao động quanh vị trí cân bằng cố định.",
-                    "C. Chất lỏng có thể tích xác định nhưng không có hình dạng xác định.",
-                    "D. Lực tương tác phân tử yếu hơn ở thể rắn nhưng mạnh hơn ở thể khí."
-                ],
-                correctAnswerIndex: 1 // Đáp án B[cite: 1]
-            },
-            {
-                id: "q2", 
-                type: "theory",
-                text: "Sự bay hơi khác với sự sôi ở điểm nào sau đây?[cite: 1]",
-                options: [
-                    "A. Sự bay hơi chỉ xảy ra ở nhiệt độ sôi của chất lỏng.",
-                    "B. Sự bay hơi xảy ra ở bất kỳ nhiệt độ nào và chỉ diễn ra trên bề mặt chất lỏng.",
-                    "C. Sự bay hơi diễn ra cả ở trong lòng và trên bề mặt chất lỏng.",
-                    "D. Sự bay hơi làm nhiệt độ chất lỏng liên tục tăng lên."
-                ],
-                correctAnswerIndex: 1 // Đáp án B[cite: 1]
-            },
-            {
-                id: "q3", 
-                type: "math",
-                template: (p) => `Người ta thực hiện một công ${p.A} J để nén một lượng khí trong xilanh. Khí tỏa nhiệt lượng ${p.Q} J ra môi trường. Tính độ biến thiên nội năng của khối khí theo đơn vị Jun (J).[cite: 1]`,
-                generateParams: () => {
-                    // Ramdomize: Công A từ 100 đến 400, Nhiệt lượng Q từ 50 đến A-10
-                    const A = Math.floor(Math.random() * 301) + 100;
-                    const Q = Math.floor(Math.random() * (A - 50)) + 50;
-                    return { params: {A, Q}, answer: A - Q }; // Nội năng = A + (-Q)[cite: 1]
-                }
-            },
-            {
-                id: "q4", 
-                type: "math",
-                template: (p) => `Cung cấp nhiệt lượng ${p.Q} J cho ${p.m} kg nước ban đầu ở 20 °C. Hỏi nhiệt độ của nước tăng thêm bao nhiêu °C? Biết nhiệt dung riêng của nước c = 4200 J/kg.K.[cite: 1]`,
-                generateParams: () => {
-                    // Ramdomize: Khối lượng m từ 1 đến 5 kg, Độ tăng nhiệt độ Delta T từ 2 đến 15
-                    const m = Math.floor(Math.random() * 5) + 1;
-                    const deltaT = Math.floor(Math.random() * 14) + 2; 
-                    const Q = m * 4200 * deltaT; // Q = mcΔt[cite: 1]
-                    return { params: {Q, m}, answer: deltaT };
-                }
+            <!-- Q1 -->
+            <div class="question-item" id="q-p1-1">
+                <div class="question-text">Câu 1: Đặc điểm nào sau đây KHÔNG phải là đặc điểm của chất ở thể lỏng?</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_1" value="A"> A. Khoảng cách giữa các phân tử lớn hơn ở thể rắn và nhỏ hơn ở thể khí.</label>
+                    <label class="option-label"><input type="radio" name="p1_1" value="B"> B. Các phân tử dao động quanh vị trí cân bằng cố định.</label>
+                    <label class="option-label"><input type="radio" name="p1_1" value="C"> C. Chất lỏng có thể tích xác định nhưng không có hình dạng xác định.</label>
+                    <label class="option-label"><input type="radio" name="p1_1" value="D"> D. Lực tương tác phân tử yếu hơn ở thể rắn nhưng mạnh hơn ở thể khí.</label>
+                </div>
+                <div class="explanation" id="exp-p1-1"></div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="question-item" id="q-p1-2">
+                <div class="question-text">Câu 2: Quá trình chuyển trực tiếp từ thể rắn sang thể khí (hơi) của một chất gọi là</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_2" value="A"> A. sự thăng hoa.</label>
+                    <label class="option-label"><input type="radio" name="p1_2" value="B"> B. sự ngưng tụ.</label>
+                    <label class="option-label"><input type="radio" name="p1_2" value="C"> C. sự hóa hơi.</label>
+                    <label class="option-label"><input type="radio" name="p1_2" value="D"> D. sự nóng chảy.</label>
+                </div>
+                <div class="explanation" id="exp-p1-2"></div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="question-item" id="q-p1-3">
+                <div class="question-text">Câu 3: Cung cấp nhiệt lượng 200 J cho một khối khí trong xilanh, khí dãn nở sinh công 80 J đẩy pít-tông đi lên. Độ biến thiên nội năng của khối khí là</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_3" value="A"> A. 280 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_3" value="B"> B. 120 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_3" value="C"> C. -120 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_3" value="D"> D. -280 J.</label>
+                </div>
+                <div class="explanation" id="exp-p1-3"></div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="question-item" id="q-p1-4">
+                <div class="question-text">Câu 4: Người ta thực hiện một công 250 J để nén khí trong xilanh. Khí nóng lên và tỏa nhiệt 100 J ra môi trường. Nội năng của khối khí</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_4" value="A"> A. tăng 150 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_4" value="B"> B. giảm 150 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_4" value="C"> C. tăng 350 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_4" value="D"> D. giảm 350 J.</label>
+                </div>
+                <div class="explanation" id="exp-p1-4"></div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="question-item" id="q-p1-5">
+                <div class="question-text">Câu 5: Thang nhiệt độ Kelvin (K) có mốc 0 K (Độ không tuyệt đối) tương ứng với bao nhiêu °C?</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_5" value="A"> A. -273,15 °C.</label>
+                    <label class="option-label"><input type="radio" name="p1_5" value="B"> B. 0 °C.</label>
+                    <label class="option-label"><input type="radio" name="p1_5" value="C"> C. 100 °C.</label>
+                    <label class="option-label"><input type="radio" name="p1_5" value="D"> D. 273,15 °C.</label>
+                </div>
+                <div class="explanation" id="exp-p1-5"></div>
+            </div>
+
+            <!-- Q6 -->
+            <div class="question-item" id="q-p1-6">
+                <div class="question-text">Câu 6: Nhiệt độ phòng thí nghiệm đo được là 60 °C. Giá trị nhiệt độ này trong thang Kelvin (K) là</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_6" value="A"> A. 333 K.</label>
+                    <label class="option-label"><input type="radio" name="p1_6" value="B"> B. 213 K.</label>
+                    <label class="option-label"><input type="radio" name="p1_6" value="C"> C. 313 K.</label>
+                    <label class="option-label"><input type="radio" name="p1_6" value="D"> D. 360 K.</label>
+                </div>
+                <div class="explanation" id="exp-p1-6"></div>
+            </div>
+
+            <!-- Q7 -->
+            <div class="question-item" id="q-p1-7">
+                <div class="question-text">Câu 7: Hai vật A và B tiếp xúc nhiệt với nhau. Nhiệt năng chỉ tự truyền từ vật A sang vật B khi</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_7" value="A"> A. khối lượng vật A lớn hơn vật B.</label>
+                    <label class="option-label"><input type="radio" name="p1_7" value="B"> B. nhiệt độ vật A cao hơn nhiệt độ vật B.</label>
+                    <label class="option-label"><input type="radio" name="p1_7" value="C"> C. thể tích vật A lớn hơn vật B.</label>
+                    <label class="option-label"><input type="radio" name="p1_7" value="D"> D. nội năng vật A lớn hơn vật B.</label>
+                </div>
+                <div class="explanation" id="exp-p1-7"></div>
+            </div>
+
+            <!-- Q8 -->
+            <div class="question-item" id="q-p1-8">
+                <div class="question-text">Câu 8: Để tăng nhiệt độ của 2 kg nước từ 25 °C lên 80 °C (c = 4200 J/kg.K), nhiệt lượng cần cung cấp là</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_8" value="A"> A. 462 kJ.</label>
+                    <label class="option-label"><input type="radio" name="p1_8" value="B"> B. 210 kJ.</label>
+                    <label class="option-label"><input type="radio" name="p1_8" value="C"> C. 672 kJ.</label>
+                    <label class="option-label"><input type="radio" name="p1_8" value="D"> D. 231 kJ.</label>
+                </div>
+                <div class="explanation" id="exp-p1-8"></div>
+            </div>
+
+            <!-- Q9 -->
+            <div class="question-item" id="q-p1-9">
+                <div class="question-text">Câu 9: Quả cầu nhôm khối lượng 0,5 kg ở 100 °C hạ nhiệt độ xuống 20 °C. Cho c_nhôm = 880 J/kg.K. Nhiệt lượng tỏa ra là</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_9" value="A"> A. 35200 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_9" value="B"> B. 44000 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_9" value="C"> C. 17600 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_9" value="D"> D. 70400 J.</label>
+                </div>
+                <div class="explanation" id="exp-p1-9"></div>
+            </div>
+
+            <!-- Q10 -->
+            <div class="question-item" id="q-p1-10">
+                <div class="question-text">Câu 10: Nhiệt nóng chảy riêng của nước đá là λ = 3,34 . 10⁵ J/kg. Nhiệt lượng cần cung cấp để làm nóng chảy hoàn toàn 1,5 kg nước đá ở 0 °C là</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_10" value="A"> A. 501 kJ.</label>
+                    <label class="option-label"><input type="radio" name="p1_10" value="B"> B. 222,6 kJ.</label>
+                    <label class="option-label"><input type="radio" name="p1_10" value="C"> C. 5010 J.</label>
+                    <label class="option-label"><input type="radio" name="p1_10" value="D"> D. 334 kJ.</label>
+                </div>
+                <div class="explanation" id="exp-p1-10"></div>
+            </div>
+
+            <!-- Q11 -->
+            <div class="question-item" id="q-p1-11">
+                <div class="question-text">Câu 11: Cung cấp nhiệt lượng 4,6 . 10⁶ J cho một khối nước ở 100 °C. Cho nhiệt hóa hơi riêng của nước là L = 2,3 . 10⁶ J/kg. Khối lượng nước bị hóa hơi hoàn toàn là</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_11" value="A"> A. 2 kg.</label>
+                    <label class="option-label"><input type="radio" name="p1_11" value="B"> B. 1 kg.</label>
+                    <label class="option-label"><input type="radio" name="p1_11" value="C"> C. 0,5 kg.</label>
+                    <label class="option-label"><input type="radio" name="p1_11" value="D"> D. 4 kg.</label>
+                </div>
+                <div class="explanation" id="exp-p1-11"></div>
+            </div>
+
+            <!-- Q12 -->
+            <div class="question-item" id="q-p1-12">
+                <div class="question-text">Câu 12: Muốn làm cho 0,2 kg nước ở 100 °C hóa hơi hoàn toàn cần nhiệt lượng 452 kJ. Nhiệt hóa hơi riêng của nước tính từ thí nghiệm này là</div>
+                <div class="options-list">
+                    <label class="option-label"><input type="radio" name="p1_12" value="A"> A. 2,26 . 10⁶ J/kg.</label>
+                    <label class="option-label"><input type="radio" name="p1_12" value="B"> B. 0,904 . 10⁶ J/kg.</label>
+                    <label class="option-label"><input type="radio" name="p1_12" value="C"> C. 2,26 . 10³ J/kg.</label>
+                    <label class="option-label"><input type="radio" name="p1_12" value="D"> D. 1,13 . 10⁶ J/kg.</label>
+                </div>
+                <div class="explanation" id="exp-p1-12"></div>
+            </div>
+
+        </div>
+
+        <!-- PHẦN II -->
+        <div class="section-box">
+            <div class="section-header">
+                <h3>PHẦN II. Câu trắc nghiệm Đúng / Sai</h3>
+                <span class="section-points">2 câu (2.0 điểm - 0.25đ/ý; 4 ý = 1.0đ/câu)</span>
+            </div>
+
+            <!-- Q1 -->
+            <div class="question-item">
+                <div class="question-text">Câu 1: Xét mô hình động học phân tử và sự biến đổi nội năng của chất khí:</div>
+                <table class="tf-table">
+                    <thead>
+                        <tr>
+                            <th>Phát biểu</th>
+                            <th style="width: 120px; text-align: center;">Lựa chọn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>a) Các phân tử chất lỏng chuyển động hoàn toàn tự do về mọi phía giống như chất khí.</td>
+                            <td>
+                                <div class="tf-radio-group">
+                                    <label><input type="radio" name="p2_1_a" value="D"> Đ</label>
+                                    <label><input type="radio" name="p2_1_a" value="S"> S</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>b) Ở nhiệt độ phòng, chất rắn có thể tích và hình dạng xác định do lực liên kết giữa các phân tử rất mạnh.</td>
+                            <td>
+                                <div class="tf-radio-group">
+                                    <label><input type="radio" name="p2_1_b" value="D"> Đ</label>
+                                    <label><input type="radio" name="p2_1_b" value="S"> S</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>c) Đun nóng một bình kín chứa không khí (thể tích không đổi), nội năng của khối khí tăng lên hoàn toàn do thực hiện công.</td>
+                            <td>
+                                <div class="tf-radio-group">
+                                    <label><input type="radio" name="p2_1_c" value="D"> Đ</label>
+                                    <label><input type="radio" name="p2_1_c" value="S"> S</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>d) Cung cấp nhiệt lượng 300 J cho một khối khí trong xilanh đồng thời nén khí bằng một công 100 J. Khi đó nội năng khối khí tăng 400 J.</td>
+                            <td>
+                                <div class="tf-radio-group">
+                                    <label><input type="radio" name="p2_1_d" value="D"> Đ</label>
+                                    <label><input type="radio" name="p2_1_d" value="S"> S</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="explanation" id="exp-p2-1"></div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="question-item">
+                <div class="question-text">Câu 2: Khi nghiên cứu về sự chuyển thể của chất:</div>
+                <table class="tf-table">
+                    <thead>
+                        <tr>
+                            <th>Phát biểu</th>
+                            <th style="width: 120px; text-align: center;">Lựa chọn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>a) Chất rắn phi kim (như thủy tinh, nhựa đường, sáp) có nhiệt độ nóng chảy xác định.</td>
+                            <td>
+                                <div class="tf-radio-group">
+                                    <label><input type="radio" name="p2_2_a" value="D"> Đ</label>
+                                    <label><input type="radio" name="p2_2_a" value="S"> S</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>b) Để làm nóng chảy hoàn toàn 3 kg nước đá ở 0 °C cần cung cấp nhiệt lượng 1002 kJ (biết λ = 3,34 . 10⁵ J/kg).</td>
+                            <td>
+                                <div class="tf-radio-group">
+                                    <label><input type="radio" name="p2_2_b" value="D"> Đ</label>
+                                    <label><input type="radio" name="p2_2_b" value="S"> S</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>c) Quá trình hóa hơi diễn ra ở mọi nhiệt độ gọi là sự bay hơi.</td>
+                            <td>
+                                <div class="tf-radio-group">
+                                    <label><input type="radio" name="p2_2_c" value="D"> Đ</label>
+                                    <label><input type="radio" name="p2_2_c" value="S"> S</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>d) Khi dùng cồn bôi lên da, ta cảm thấy mát lạnh vì cồn bay hơi nhanh và thu nhiệt từ cơ thể.</td>
+                            <td>
+                                <div class="tf-radio-group">
+                                    <label><input type="radio" name="p2_2_d" value="D"> Đ</label>
+                                    <label><input type="radio" name="p2_2_d" value="S"> S</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="explanation" id="exp-p2-2"></div>
+            </div>
+
+        </div>
+
+        <!-- PHẦN III -->
+        <div class="section-box">
+            <div class="section-header">
+                <h3>PHẦN III. Câu trắc nghiệm trả lời ngắn</h3>
+                <span class="section-points">4 câu (2.0 điểm - 0.5đ/câu)</span>
+            </div>
+
+            <div class="question-item">
+                <div class="question-text">Câu 1: Người ta thực hiện một công 250 J để nén một lượng khí trong xilanh. Khí tỏa nhiệt lượng 80 J ra môi trường. Tính độ biến thiên nội năng của khối khí theo đơn vị Jun (J).</div>
+                <div class="short-input-group">
+                    <label>Đáp số:</label>
+                    <input type="number" step="any" class="short-input" id="p3_1" placeholder="Nhập số nguyên/thập phân...">
+                    <span>J</span>
+                </div>
+                <div class="explanation" id="exp-p3-1"></div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-text">Câu 2: Cung cấp nhiệt lượng 12600 J cho 1 kg nước ban đầu ở 20 °C. Hỏi nhiệt độ của nước tăng thêm bao nhiêu °C? Biết c_nước = 4200 J/kg.K.</div>
+                <div class="short-input-group">
+                    <label>Đáp số:</label>
+                    <input type="number" step="any" class="short-input" id="p3_2" placeholder="Nhập giá trị...">
+                    <span>°C</span>
+                </div>
+                <div class="explanation" id="exp-p3-2"></div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-text">Câu 3: Cung cấp nhiệt lượng 1840 kJ cho một lượng nước ở 100 °C. Khối lượng nước bị hóa hơi hoàn toàn là bao nhiêu gam (g)? Biết L = 2,3 . 10⁶ J/kg.</div>
+                <div class="short-input-group">
+                    <label>Đáp số:</label>
+                    <input type="number" step="any" class="short-input" id="p3_3" placeholder="Nhập giá trị theo g...">
+                    <span>g</span>
+                </div>
+                <div class="explanation" id="exp-p3-3"></div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-text">Câu 4: Tính nhiệt lượng (theo đơn vị kJ) cần cung cấp để làm hóa hơi hoàn toàn 300 g nước ở 100 °C. Cho L = 2,26 . 10⁶ J/kg.</div>
+                <div class="short-input-group">
+                    <label>Đáp số:</label>
+                    <input type="number" step="any" class="short-input" id="p3_4" placeholder="Nhập giá trị theo kJ...">
+                    <span>kJ</span>
+                </div>
+                <div class="explanation" id="exp-p3-4"></div>
+            </div>
+
+        </div>
+
+        <!-- PHẦN IV -->
+        <div class="section-box">
+            <div class="section-header">
+                <h3>PHẦN IV. Bài tập tự luận</h3>
+                <span class="section-points">3 câu (3.0 điểm - 1.0đ/câu)</span>
+            </div>
+
+            <div class="question-item">
+                <div class="question-text">Câu 1: Một khối khí lý tưởng đựng trong xilanh nằm ngang đậy kín bởi pít-tông có diện tích S = 150 cm². Đun nóng khối khí làm nó nhận nhiệt lượng Q = 500 J và dãn nở đẩy pít-tông dịch chuyển một đoạn d = 10 cm ở áp suất không đổi p = 1,6 . 10⁵ Pa.</div>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 6px;">a) Tính công do khối khí thực hiện khi dãn nở.<br>b) Tính độ biến thiên nội năng của khối khí.</p>
+                <textarea class="essay-textarea" placeholder="Nhập bài làm tự luận của bạn vào đây (tùy chọn)..."></textarea>
+                <button type="button" class="btn-close" style="margin-top:8px; background: #2563eb;" onclick="toggleSolution('sol-p4-1')">Xem Lời Giải Chi Tiết</button>
+                <div class="solution-box" id="sol-p4-1">
+                    <strong>Lời giải:</strong><br>
+                    a) Đổi S = 150 cm² = 0,015 m²; d = 10 cm = 0,1 m.<br>
+                    Thể tích khí tăng một lượng: ΔV = S . d = 0,015 . 0,1 = 0,0015 m³.<br>
+                    Công do khối khí thực hiện khi dãn nở:<br>
+                    A' = p . ΔV = 1,6 . 10⁵ . 0,0015 = 240 J.<br>
+                    Khí dãn nở sinh công nên theo quy ước công khí nhận là A = -A' = -240 J.<br>
+                    b) Độ biến thiên nội năng của khối khí:<br>
+                    ΔU = Q + A = 500 + (-240) = 260 J.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-text">Câu 2: Một bình nhiệt lượng kế chứa m₁ = 0,4 kg nước ở nhiệt độ t₁ = 20 °C. Thả vào bình một thỏi đồng có khối lượng m₂ = 0,5 kg ở nhiệt độ t₂ = 100 °C. Cho c_nước = 4200 J/kg.K, c_đồng = 380 J/kg.K. Bỏ qua sự mất mát nhiệt ra môi trường và bình.</div>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 6px;">a) Viết biểu thức nhiệt lượng tỏa ra và thu vào.<br>b) Tính nhiệt độ cân bằng t của hệ.</p>
+                <textarea class="essay-textarea" placeholder="Nhập bài làm tự luận của bạn vào đây (tùy chọn)..."></textarea>
+                <button type="button" class="btn-close" style="margin-top:8px; background: #2563eb;" onclick="toggleSolution('sol-p4-2')">Xem Lời Giải Chi Tiết</button>
+                <div class="solution-box" id="sol-p4-2">
+                    <strong>Lời giải:</strong><br>
+                    a) Gọi t là nhiệt độ cân bằng (°C):<br>
+                    - Nhiệt lượng tỏa ra của đồng: Q_tỏa = m₂ . c_đồng . (t₂ - t) = 0,5 . 380 . (100 - t) = 190 . (100 - t) (J).<br>
+                    - Nhiệt lượng thu vào của nước: Q_thu = m₁ . c_nước . (t - t₁) = 0,4 . 4200 . (t - 20) = 1680 . (t - 20) (J).<br>
+                    b) Áp dụng phương trình cân bằng nhiệt:<br>
+                    Q_tỏa = Q_thu <=> 190 . (100 - t) = 1680 . (t - 20)<br>
+                    <=> 19000 - 190.t = 1680.t - 33600<br>
+                    <=> 1870.t = 52600 => t ≈ 28,13 °C.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-text">Câu 3: Dùng ấm điện công suất P = 1500 W để đun m = 1,5 kg nước từ t₁ = 25 °C đến khi bắt đầu sôi ở 100 °C. Hiệu suất ấm H = 90%. Cho c = 4200 J/kg.K, L = 2,26 . 10⁶ J/kg.</div>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 6px;">a) Tính thời gian đun nước từ 25 °C đến 100 °C.<br>b) Nếu đun sôi tiếp trong Δt₂ = 180 s nữa thì khối lượng nước còn lại trong ấm là bao nhiêu gam?</p>
+                <textarea class="essay-textarea" placeholder="Nhập bài làm tự luận của bạn vào đây (tùy chọn)..."></textarea>
+                <button type="button" class="btn-close" style="margin-top:8px; background: #2563eb;" onclick="toggleSolution('sol-p4-3')">Xem Lời Giải Chi Tiết</button>
+                <div class="solution-box" id="sol-p4-3">
+                    <strong>Lời giải:</strong><br>
+                    a) Nhiệt lượng có ích cần để đun nước từ 25 °C lên 100 °C:<br>
+                    Q_có_ích = m . c . (100 - 25) = 1,5 . 4200 . 75 = 472500 J.<br>
+                    Nhiệt lượng toàn phần ấm điện cung cấp:<br>
+                    Q_tp = Q_có_ích / H = 472500 / 0,9 = 525000 J.<br>
+                    Thời gian đun: t₁ = Q_tp / P = 525000 / 1500 = 350 giây (5 phút 50 giây).<br>
+                    b) Trong Δt₂ = 180 s đun sôi tiếp, nhiệt lượng có ích cung cấp cho sự hóa hơi:<br>
+                    Q_hóa_hơi = P . Δt₂ . H = 1500 . 180 . 0,9 = 243000 J.<br>
+                    Khối lượng nước bị hóa hơi:<br>
+                    m_hóa_hơi = Q_hóa_hơi / L = 243000 / (2,26 . 10⁶) ≈ 0,1075 kg = 107,5 g.<br>
+                    Khối lượng nước còn lại trong ấm:<br>
+                    m_còn_lại = 1500 g - 107,5 g = 1392,5 g.
+                </div>
+            </div>
+
+        </div>
+
+        <button type="button" class="btn-submit" onclick="submitExam()">NỘP BÀI & XEM KẾT QUẢ</button>
+    </form>
+</div>
+
+<!-- Modal Kết Quả -->
+<div class="result-modal" id="resultModal">
+    <div class="modal-content">
+        <h2>KẾT QUẢ BÀI THI</h2>
+        <div class="score-circle" id="totalScore">0.0</div>
+        <p id="scoreDetail" style="font-size: 15px; color: var(--text-muted);"></p>
+        <button class="btn-close" onclick="closeModal()">Xem Chi Tiết Bài Làm</button>
+    </div>
+</div>
+
+<script>
+    // Timer functionality
+    let totalSeconds = 45 * 60;
+    const timerElement = document.getElementById('timer');
+    const countdown = setInterval(() => {
+        if (totalSeconds <= 0) {
+            clearInterval(countdown);
+            alert("Đã hết thời gian làm bài! Hệ thống sẽ tự động chấm điểm.");
+            submitExam();
+        } else {
+            totalSeconds--;
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            timerElement.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+    }, 1000);
+
+    // Answer Key Data
+    const answersP1 = {
+        p1_1: { ans: "B", exp: "Đúng! Chất lỏng các phân tử dao động quanh vị trí cân bằng tạm thời (di động), không cố định." },
+        p1_2: { ans: "A", exp: "Đúng! Quá trình chuyển từ thể rắn sang khí gọi là sự thăng hoa." },
+        p1_3: { ans: "B", exp: "Đúng! ΔU = Q + A = 200 J + (-80 J) = 120 J." },
+        p1_4: { ans: "A", exp: "Đúng! ΔU = Q + A = (-100 J) + 250 J = 150 J (tăng 150 J)." },
+        p1_5: { ans: "A", exp: "Đúng! 0 K tương ứng với -273,15 °C." },
+        p1_6: { ans: "A", exp: "Đúng! T = t + 273 = 60 + 273 = 333 K." },
+        p1_7: { ans: "B", exp: "Đúng! Nhiệt năng tự truyền từ vật có nhiệt độ cao sang vật có nhiệt độ thấp hơn." },
+        p1_8: { ans: "A", exp: "Đúng! Q = m.c.Δt = 2 . 4200 . (80 - 25) = 462 000 J = 462 kJ." },
+        p1_9: { ans: "A", exp: "Đúng! Q = m.c.Δt = 0,5 . 880 . (100 - 20) = 35 200 J." },
+        p1_10: { ans: "A", exp: "Đúng! Q = λ.m = 3,34 . 10⁵ . 1,5 = 501 000 J = 501 kJ." },
+        p1_11: { ans: "A", exp: "Đúng! m = Q / L = (4,6 . 10⁶) / (2,3 . 10⁶) = 2 kg." },
+        p1_12: { ans: "A", exp: "Đúng! L = Q / m = 452 000 / 0,2 = 2,26 . 10⁶ J/kg." }
+    };
+
+    const answersP2 = {
+        p2_1: { a: "S", b: "Đ", c: "S", d: "Đ", exp: "Đáp án đúng: a-Sai (chất lỏng dao động quanh VTCB tạm thời), b-Đúng, c-Sai (bình kín V không đổi => A = 0, ΔU tăng do truyền nhiệt Q), d-Đúng (ΔU = 300 + 100 = 400 J)." },
+        p2_2: { a: "S", b: "Đ", c: "Đ", d: "Đ", exp: "Đáp án đúng: a-Sai (thủy tinh, nhựa đường là chất rắn vô định hình không có nhiệt độ nóng chảy xác định), b-Đúng (Q = 3 . 3,34.10⁵ = 1002 kJ), c-Đúng, d-Đúng." }
+    };
+
+    const answersP3 = {
+        p3_1: { val: 170, exp: "Đúng! ΔU = Q + A = (-80) + 250 = 170 J." },
+        p3_2: { val: 3, exp: "Đúng! Δt = Q / (m.c) = 12600 / (1 . 4200) = 3 °C." },
+        p3_3: { val: 800, exp: "Đúng! m = Q / L = 1 840 000 / 2 300 000 = 0,8 kg = 800 g." },
+        p3_4: { val: 678, exp: "Đúng! Q = L.m = (2,26 . 10⁶) . 0,3 = 678 000 J = 678 kJ." }
+    };
+
+    function toggleSolution(id) {
+        const box = document.getElementById(id);
+        if (box.style.display === "block") {
+            box.style.display = "none";
+        } else {
+            box.style.display = "block";
+        }
+    }
+
+    function submitExam() {
+        let scoreP1 = 0;
+        let scoreP2 = 0;
+        let scoreP3 = 0;
+
+        // Grade Part 1 (12 questions * 0.25 = 3.0 points)
+        for (let i = 1; i <= 12; i++) {
+            const key = `p1_${i}`;
+            const selected = document.querySelector(`input[name="${key}"]:checked`);
+            const expDiv = document.getElementById(`exp-${key}`);
+            expDiv.style.display = "block";
+
+            if (selected && selected.value === answersP1[key].ans) {
+                scoreP1 += 0.25;
+                expDiv.className = "explanation correct";
+                expDiv.innerHTML = `✓ Chính xác! (0.25đ) - ${answersP1[key].exp}`;
+            } else {
+                expDiv.className = "explanation incorrect";
+                const selVal = selected ? selected.value : "Chưa chọn";
+                expDiv.innerHTML = `✗ Chưa chính xác (Bạn chọn: ${selVal}). Đáp án đúng là <strong>${answersP1[key].ans}</strong>. ${answersP1[key].exp}`;
             }
-        ];
-
-        let currentQuizState = [];
-
-        function initializeQuiz() {
-            currentQuizState = questionDatabase.map(q => {
-                if(q.type === 'math') {
-                    const dynamicData = q.generateParams();
-                    return { ...q, currentParams: dynamicData.params, currentAnswer: dynamicData.answer };
-                }
-                return { ...q };
-            });
-            renderQuiz();
         }
 
-        function shuffleQuestions() {
-            currentQuizState.sort(() => Math.random() - 0.5);
-            renderQuiz();
-        }
+        // Grade Part 2 (2 questions, 0.25đ / sub-item = 1.0đ / question, max 2.0 points)
+        for (let i = 1; i <= 2; i++) {
+            const qKey = `p2_${i}`;
+            const subItems = ['a', 'b', 'c', 'd'];
+            let subCorrect = 0;
 
-        function randomizeParameters() {
-            currentQuizState = currentQuizState.map(q => {
-                if(q.type === 'math') {
-                    const dynamicData = q.generateParams();
-                    return { ...q, currentParams: dynamicData.params, currentAnswer: dynamicData.answer };
-                }
-                return q;
-            });
-            renderQuiz();
-        }
-
-        function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            container.innerHTML = '';
-            
-            currentQuizState.forEach((q, index) => {
-                const card = document.createElement('div');
-                card.className = 'question-card';
-                
-                let html = `<p><strong>Câu ${index + 1}:</strong> ${q.type === 'math' ? q.template(q.currentParams) : q.text}</p>`;
-
-                if(q.type === 'theory') {
-                    html += `<ul class="options">`;
-                    q.options.forEach((opt, optIndex) => {
-                        html += `<li><label><input type="radio" name="${q.id}" value="${optIndex}"> ${opt}</label></li>`;
-                    });
-                    html += `</ul>`;
-                } else {
-                    html += `<input type="number" id="input_${q.id}" placeholder="Nhập số...">`;
-                }
-                
-                html += `<div id="result_${q.id}" class="result-msg"></div>`;
-                card.innerHTML = html;
-                container.appendChild(card);
-            });
-            document.getElementById('score-display').innerHTML = '';
-        }
-
-        function checkAnswers() {
-            let correctCount = 0;
-            
-            currentQuizState.forEach(q => {
-                const resultDiv = document.getElementById(`result_${q.id}`);
-                let isCorrect = false;
-                
-                if(q.type === 'theory') {
-                    const selected = document.querySelector(`input[name="${q.id}"]:checked`);
-                    if(selected && parseInt(selected.value) === q.correctAnswerIndex) {
-                        isCorrect = true;
-                    }
-                } else {
-                    const userInput = document.getElementById(`input_${q.id}`).value;
-                    if(userInput !== "" && parseFloat(userInput) === q.currentAnswer) {
-                        isCorrect = true;
-                    }
-                }
-
-                if(isCorrect) {
-                    correctCount++;
-                    resultDiv.className = 'result-msg correct';
-                    resultDiv.innerText = '✔ Chính xác!';
-                } else {
-                    resultDiv.className = 'result-msg incorrect';
-                    let text = '✖ Sai!';
-                    if(q.type === 'math') text += ` Đáp án đúng là: ${q.currentAnswer}`;
-                    resultDiv.innerText = text;
+            subItems.forEach(item => {
+                const selected = document.querySelector(`input[name="${qKey}_${item}"]:checked`);
+                if (selected && selected.value === answersP2[qKey][item]) {
+                    subCorrect++;
                 }
             });
-            
-            document.getElementById('score-display').innerHTML = `<strong>Điểm số: ${correctCount} / ${currentQuizState.length}</strong>`;
+
+            const qScore = subCorrect * 0.25;
+            scoreP2 += qScore;
+
+            const expDiv = document.getElementById(`exp-${qKey}`);
+            expDiv.style.display = "block";
+            expDiv.className = subCorrect === 4 ? "explanation correct" : "explanation incorrect";
+            expDiv.innerHTML = `Đúng ${subCorrect}/4 ý (${qScore.toFixed(2)}đ). ${answersP2[qKey].exp}`;
         }
 
-        // Khởi tạo ngay khi tải trang
-        window.onload = initializeQuiz;
-    </script>
+        // Grade Part 3 (4 questions * 0.5 = 2.0 points)
+        for (let i = 1; i <= 4; i++) {
+            const inputVal = parseFloat(document.getElementById(`p3_${i}`).value);
+            const targetVal = answersP3[`p3_${i}`].val;
+            const expDiv = document.getElementById(`exp-p3-${i}`);
+            expDiv.style.display = "block";
+
+            if (!isNaN(inputVal) && Math.abs(inputVal - targetVal) < 0.01) {
+                scoreP3 += 0.5;
+                expDiv.className = "explanation correct";
+                expDiv.innerHTML = `✓ Chính xác! (0.5đ) - ${answersP3[`p3_${i}`].exp}`;
+            } else {
+                expDiv.className = "explanation incorrect";
+                expDiv.innerHTML = `✗ Chưa chính xác. Đáp số đúng: <strong>${targetVal}</strong>. ${answersP3[`p3_${i}`].exp}`;
+            }
+        }
+
+        // Automatically open all Part 4 solutions for self-assessment
+        for (let i = 1; i <= 3; i++) {
+            document.getElementById(`sol-p4-${i}`).style.display = "block";
+        }
+
+        const totalAutoScore = scoreP1 + scoreP2 + scoreP3; // Max 7.0 points automatically graded
+
+        document.getElementById('totalScore').textContent = `${totalAutoScore.toFixed(2)} / 7.0`;
+        document.getElementById('scoreDetail').innerHTML = `
+            <strong>Phần I (Trắc nghiệm):</strong> ${scoreP1.toFixed(2)} / 3.0 điểm<br>
+            <strong>Phần II (Đúng / Sai):</strong> ${scoreP2.toFixed(2)} / 2.0 điểm<br>
+            <strong>Phần III (Trả lời ngắn):</strong> ${scoreP3.toFixed(2)} / 2.0 điểm<br>
+            <br>
+            <em>* Lưu ý: Phần IV (Tự luận - 3.0 điểm) đã được hiển thị lời giải chi tiết bên dưới để bạn tự đối chiếu và chấm điểm.</em>
+        `;
+        document.getElementById('resultModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('resultModal').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
 </body>
 </html>
