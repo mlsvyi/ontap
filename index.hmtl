@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Vật Lí 12 - Xáo Trộn & Đổi Thông Số</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
+        h2 { text-align: center; color: #2c3e50; }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #3498db; color: white; border: none; border-radius: 5px; transition: 0.3s; }
+        button:hover { background-color: #2980b9; }
+        .btn-random { background-color: #e67e22; }
+        .btn-random:hover { background-color: #d35400; }
+        .btn-submit { background-color: #27ae60; }
+        .btn-submit:hover { background-color: #2ecc71; }
+        .question-card { border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; margin-bottom: 20px; background-color: #fcfcfc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .options { list-style-type: none; padding-left: 0; }
+        .options li { margin-bottom: 10px; }
+        .options label { cursor: pointer; }
+        input[type="number"] { padding: 10px; width: 120px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        .result-msg { margin-top: 12px; font-weight: bold; }
+        .correct { color: #27ae60; }
+        .incorrect { color: #e74c3c; }
+        #score-display { text-align: center; font-size: 1.5em; margin-top: 20px; color: #2c3e50; }
+    </style>
+</head>
+<body>
+
+    <h2>Hệ Thống Ôn Tập Vật Lí 12[cite: 1]</h2>
+    
+    <div class="controls">
+        <button onclick="shuffleQuestions()">🔀 Xáo Trộn Câu Hỏi</button>
+        <button class="btn-random" onclick="randomizeParameters()">🔄 Thay Đổi Thông Số (Toán)</button>
+        <button class="btn-submit" onclick="checkAnswers()">✅ Chấm Điểm</button>
+    </div>
+
+    <div id="quiz-container"></div>
+    <div id="score-display"></div>
+
+    <script>
+        // Cơ sở dữ liệu câu hỏi được trích xuất từ đề cương[cite: 1]
+        const questionDatabase = [
+            {
+                id: "q1", 
+                type: "theory",
+                text: "Đặc điểm nào sau đây không phải là đặc điểm của chất ở thể lỏng?[cite: 1]",
+                options: [
+                    "A. Khoảng cách giữa các phân tử lớn hơn ở thể rắn và nhỏ hơn ở thể khí.",
+                    "B. Các phân tử dao động quanh vị trí cân bằng cố định.",
+                    "C. Chất lỏng có thể tích xác định nhưng không có hình dạng xác định.",
+                    "D. Lực tương tác phân tử yếu hơn ở thể rắn nhưng mạnh hơn ở thể khí."
+                ],
+                correctAnswerIndex: 1 // Đáp án B[cite: 1]
+            },
+            {
+                id: "q2", 
+                type: "theory",
+                text: "Sự bay hơi khác với sự sôi ở điểm nào sau đây?[cite: 1]",
+                options: [
+                    "A. Sự bay hơi chỉ xảy ra ở nhiệt độ sôi của chất lỏng.",
+                    "B. Sự bay hơi xảy ra ở bất kỳ nhiệt độ nào và chỉ diễn ra trên bề mặt chất lỏng.",
+                    "C. Sự bay hơi diễn ra cả ở trong lòng và trên bề mặt chất lỏng.",
+                    "D. Sự bay hơi làm nhiệt độ chất lỏng liên tục tăng lên."
+                ],
+                correctAnswerIndex: 1 // Đáp án B[cite: 1]
+            },
+            {
+                id: "q3", 
+                type: "math",
+                template: (p) => `Người ta thực hiện một công ${p.A} J để nén một lượng khí trong xilanh. Khí tỏa nhiệt lượng ${p.Q} J ra môi trường. Tính độ biến thiên nội năng của khối khí theo đơn vị Jun (J).[cite: 1]`,
+                generateParams: () => {
+                    // Ramdomize: Công A từ 100 đến 400, Nhiệt lượng Q từ 50 đến A-10
+                    const A = Math.floor(Math.random() * 301) + 100;
+                    const Q = Math.floor(Math.random() * (A - 50)) + 50;
+                    return { params: {A, Q}, answer: A - Q }; // Nội năng = A + (-Q)[cite: 1]
+                }
+            },
+            {
+                id: "q4", 
+                type: "math",
+                template: (p) => `Cung cấp nhiệt lượng ${p.Q} J cho ${p.m} kg nước ban đầu ở 20 °C. Hỏi nhiệt độ của nước tăng thêm bao nhiêu °C? Biết nhiệt dung riêng của nước c = 4200 J/kg.K.[cite: 1]`,
+                generateParams: () => {
+                    // Ramdomize: Khối lượng m từ 1 đến 5 kg, Độ tăng nhiệt độ Delta T từ 2 đến 15
+                    const m = Math.floor(Math.random() * 5) + 1;
+                    const deltaT = Math.floor(Math.random() * 14) + 2; 
+                    const Q = m * 4200 * deltaT; // Q = mcΔt[cite: 1]
+                    return { params: {Q, m}, answer: deltaT };
+                }
+            }
+        ];
+
+        let currentQuizState = [];
+
+        function initializeQuiz() {
+            currentQuizState = questionDatabase.map(q => {
+                if(q.type === 'math') {
+                    const dynamicData = q.generateParams();
+                    return { ...q, currentParams: dynamicData.params, currentAnswer: dynamicData.answer };
+                }
+                return { ...q };
+            });
+            renderQuiz();
+        }
+
+        function shuffleQuestions() {
+            currentQuizState.sort(() => Math.random() - 0.5);
+            renderQuiz();
+        }
+
+        function randomizeParameters() {
+            currentQuizState = currentQuizState.map(q => {
+                if(q.type === 'math') {
+                    const dynamicData = q.generateParams();
+                    return { ...q, currentParams: dynamicData.params, currentAnswer: dynamicData.answer };
+                }
+                return q;
+            });
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            
+            currentQuizState.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                
+                let html = `<p><strong>Câu ${index + 1}:</strong> ${q.type === 'math' ? q.template(q.currentParams) : q.text}</p>`;
+
+                if(q.type === 'theory') {
+                    html += `<ul class="options">`;
+                    q.options.forEach((opt, optIndex) => {
+                        html += `<li><label><input type="radio" name="${q.id}" value="${optIndex}"> ${opt}</label></li>`;
+                    });
+                    html += `</ul>`;
+                } else {
+                    html += `<input type="number" id="input_${q.id}" placeholder="Nhập số...">`;
+                }
+                
+                html += `<div id="result_${q.id}" class="result-msg"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+            });
+            document.getElementById('score-display').innerHTML = '';
+        }
+
+        function checkAnswers() {
+            let correctCount = 0;
+            
+            currentQuizState.forEach(q => {
+                const resultDiv = document.getElementById(`result_${q.id}`);
+                let isCorrect = false;
+                
+                if(q.type === 'theory') {
+                    const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+                    if(selected && parseInt(selected.value) === q.correctAnswerIndex) {
+                        isCorrect = true;
+                    }
+                } else {
+                    const userInput = document.getElementById(`input_${q.id}`).value;
+                    if(userInput !== "" && parseFloat(userInput) === q.currentAnswer) {
+                        isCorrect = true;
+                    }
+                }
+
+                if(isCorrect) {
+                    correctCount++;
+                    resultDiv.className = 'result-msg correct';
+                    resultDiv.innerText = '✔ Chính xác!';
+                } else {
+                    resultDiv.className = 'result-msg incorrect';
+                    let text = '✖ Sai!';
+                    if(q.type === 'math') text += ` Đáp án đúng là: ${q.currentAnswer}`;
+                    resultDiv.innerText = text;
+                }
+            });
+            
+            document.getElementById('score-display').innerHTML = `<strong>Điểm số: ${correctCount} / ${currentQuizState.length}</strong>`;
+        }
+
+        // Khởi tạo ngay khi tải trang
+        window.onload = initializeQuiz;
+    </script>
+</body>
+</html>
